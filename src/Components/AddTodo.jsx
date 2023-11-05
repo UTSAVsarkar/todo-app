@@ -1,49 +1,35 @@
-import { useState } from "react";
+import { useContext, useRef } from "react";
+import { TodoItemContext } from "../store/todo-items-store";
 
-function AddTodo({ onNewItem }) {
-  const [name, setName] = useState();
-  const [date, setDate] = useState();
+function AddTodo() {
+  const { addNewItem } = useContext(TodoItemContext);
+  const nameElement = useRef();
+  const dataElement = useRef();
 
-  const handleNameChange = (event) => {
-    setName(event.target.value);
-  };
-
-  const handleDateChange = (event) => {
-    setDate(event.target.value);
-  };
-
-  const handleAddButtonClick = () => {
+  const handleAddButtonClick = (event) => {
+    event.preventDefault();
+    const name = nameElement.current.value;
+    const date = dataElement.current.value;
     if (name && date) {
-      onNewItem(name, date);
-      setName("");
-      setDate("");
+      nameElement.current.value = "";
+      dataElement.current.value = "";
+      addNewItem(name, date);
     }
   };
 
   return (
     <div className="container">
-      <div className="row items-row">
+      <form action="" className="row items-row" onSubmit={handleAddButtonClick}>
         <div className="col-6">
-          <input
-            type="text"
-            placeholder="Enter Todo Here"
-            onChange={handleNameChange}
-            value={name}
-          />
+          <input type="text" ref={nameElement} placeholder="Enter Todo Here" />
         </div>
         <div className="col-4">
-          <input type="date" onChange={handleDateChange} value={date} />
+          <input ref={dataElement} type="date" />
         </div>
         <div className="col-2">
-          <button
-            type="button"
-            className="btn btn-success items-button"
-            onClick={handleAddButtonClick}
-          >
-            Add
-          </button>
+          <button className="btn btn-success items-button">Add</button>
         </div>
-      </div>
+      </form>
     </div>
   );
 }
